@@ -1,0 +1,21 @@
+Langchain Components
+
+******* Components *************
+- LLM wrappers
+- prompt Templates
+- Indexes (extract relevant information)
+
+******** Chains *********************
+- combining sequence calls to acomplish cretain task
+
+******** Agents *********************
+- Agents make it possible for LLMs to be able to do actions , like interact with wikipedia
+
+******* Types of Language Models **************
+- Model = LLMs (like GPT, etc)
+- LLMs: takes a string as input and returns a string(llm.predict("input"))
+- ChatModels: takes a list of messages as input and returns a message
+      - Output is a ChatMessage, which has the following components:
+             - Content: the actual message
+             - Roel : the role of the entity of which ChatMessage is coming from
+             
