@@ -23,7 +23,14 @@ print(output.content)
 ## lets add memory to the conversation bot
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationChain 
+
 memory = ConversationBufferMemory()
 conversation = ConversationChain(
   llm=chat, verbose=True, memory=memory
 )
+
+print(conversation.run("Hi there!"))
+print(conversation.run("what is the most iconic place in Rome?"))
+print(conversation.run("What kind of other events?"))
+print(memory.load_memory_variables({}))
+
