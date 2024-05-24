@@ -24,3 +24,10 @@ chain2 = LLMChain(llm=llm,prompt=prompt2)
 
 print(chain2.run({'text':'Hey!! I got 12 out of 20 in Swimming', 'number': 'yes', 'punc':'yes', 'stem':'no'}))
 print(chain2.run({'text':'22 13B is my flat no. Rohit will be joining us for the party', 'number':'yes', 'punc':'no', 'stem':'yes'}))
+
+## story teller
+prompt3 = PromptTemplate.from_template(" Complete a {length} story using the given beginning. The genre should be {genre} and the story should have an apt ending. Beginning: {text}")
+chain3 = LLMChain(llm=llm,prompt=prompt3)
+
+print('\n'.join(chain3.run({'length':'short','genre':'horror','text':'Once there was a coder'}).replace('\n','.').split('.')))
+print('\n'.join(chain3.run({'length':'short','genre':'rom-com','text':'And the Queen died'}).replace('\n','.').split('.')))
