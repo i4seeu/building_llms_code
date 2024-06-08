@@ -1,45 +1,52 @@
 import os
+from openai import OpenAI
 from dotenv import load_dotenv
-from langchain_openai import OpenAI
-import click
-
+#from langchain_openai import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
 load_dotenv()
+#os.environ["SERPAPI_API_KEY"]
 os.environ["OPENAI_API_KEY"]
 
-client = OpenAI()
+llm_model = 'gpt-4'
 
-@click.command()
-def chat_with_felix():
-    """Chat with Felix, the chatbot."""
-    print("Felix: Hi there. I am Felix, the chatbot. How can I help you today?")
-    
-    while True:  # This will keep the chat session active
-        message = input("You: ")
 
-        # Exit the loop (and the program) if the user types 'exit' or '\quit'
-        if message.lower() in ['exit', 'quit']:
-            print("Felix: Goodbye!")
-            break
+openai = OpenAI()
 
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are smart and helpful assistant."},
-                {"role": "user", "content": "Hi there."},
-                {"role": "assistant", "content": "Hi there. \n\nI am Felix, the chatbot.\n\nHow can I help you today?"},
-                {"role": "user", "content": f"{message}"},
-            ],
-            temperature=1,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
+def get_completion(prompt, model=llm_model):
+    messages = [{"role":"user","content":prompt}]
+    response = openai.chat.completions.create(
+        model = model,
+        messages = messages,
+        temperature=0,
+    )
+    return response.choices[0].message.content
 
-        try:
-            print("Felix:", response.choices[0].message.content)
-        except:
-            print("Felix: Sorry, a problem occurred. Please try again later.")
+# Transalate text, review
 
-if __name__ == '__main__':
-    chat_with_felix()
+customer_review =""" 
+Your product is terrible! I don't know how you were able to get this to the market.
+I don't want this! Actually no one should want this. Seriously! Give me money now!
+"""
+language ="Chichewa"
+prompt =  f""" 
+Rewrite the following {customer_review} in  a polite tone, and then please translate the new review message into {language}
+"""
+review_message = get_completion(prompt)
+print(review_message)
+
+
+# ========== using langchain and prompts templates - Still ChatAPI ===========
+chat_model = ChatOpenAI(temperature=0.7,model=llm_model)
+template_string = """
+Translate the following text {customer_review} into {language} in a polite tone
+"""
+prompt_template = ChatPromptTemplate.from_template(template_string)
+
+translation_message = prompt_template.format_messages(
+    customer_review = customer_review,
+    language=language
+)
+
+response = chat_model(translation_message)
+print(response.content)
