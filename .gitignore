@@ -1,3 +1,4 @@
 .env
 noder1/
 langchain_in_your_pocket/.env
+prompt_engineering_developer/.env
