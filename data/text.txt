@@ -1,0 +1,36 @@
+SELECT
+    r.Name AS RegionName,
+    COUNT(DISTINCT sr.SubregionID) AS TotalSubregions,
+    COUNT(DISTINCT ep.ProjectID) AS TotalProjects,
+    COUNT(DISTINCT ms.StationID) AS TotalMonitoringStations,
+    COUNT(DISTINCT wt.TrackingID) AS TotalWildlifeTracked,
+    AVG(pd.PM2_5) AS AvgPM2_5,
+    AVG(pd.PM10) AS AvgPM10,
+    AVG(cd.AverageTemperature) AS AvgTemperature,
+    SUM(dd.DeforestedArea) AS TotalDeforestedArea,
+    SUM(pf.Amount) AS TotalFunding,
+    COUNT(DISTINCT el.LawID) AS TotalEnvironmentalLaws
+FROM
+    Regions r
+LEFT JOIN
+    Subregions sr ON r.RegionID = sr.RegionID
+LEFT JOIN
+    EnvironmentalProjects ep ON sr.SubregionID = ep.SubregionID
+LEFT JOIN
+    ProjectFunding pf ON ep.ProjectID = pf.ProjectID
+LEFT JOIN
+    MonitoringStations ms ON sr.SubregionID = ms.SubregionID
+LEFT JOIN
+    WildlifeTracking wt ON sr.SubregionID = wt.SubregionID
+LEFT JOIN
+    PollutionData pd ON ms.StationID = pd.StationID
+LEFT JOIN
+    ClimateData cd ON ms.StationID = cd.StationID
+LEFT JOIN
+    DeforestationData dd ON sr.SubregionID = dd.SubregionID
+LEFT JOIN
+    EnvironmentalLaws el ON sr.SubregionID = el.SubregionID
+GROUP BY
+    r.RegionID, r.Name
+ORDER BY
+    TotalProjects DESC, TotalFunding DESC;
